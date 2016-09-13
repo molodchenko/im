@@ -1,4 +1,6 @@
 Rims::Application.routes.draw do
+  post 'user_items/update'
+
   get "welcome/index"
   devise_for :users
 

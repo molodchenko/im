@@ -4,8 +4,20 @@ class ItemsController < ApplicationController
   # GET /items
   # GET /items.json
   def index
-    @items = Item.all
-    respond_with(@items)
+    @items = if params[:category].present?
+      Item.where(category: params[:category])
+    else
+      Item.all
+    end
+
+    @items = @items.paginate(:page => params[:page])
+
+    # respond_with(@items)
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @items }
+    end
   end
 
   # GET /items/1
@@ -58,6 +70,7 @@ class ItemsController < ApplicationController
     @item = Item.find(params[:id])
 
     respond_to do |format|
+#      if @item.update_columns user_id: params[:item][:user_id]
       if @item.update_attributes(params[:item])
         format.html { redirect_to @item, notice: 'Item was successfully updated.' }
         format.json { head :no_content }
