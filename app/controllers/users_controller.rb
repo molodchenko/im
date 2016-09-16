@@ -2,8 +2,13 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    @users = User.all
-    authorize @users
+    if params[:approved] == "false"
+      @users = User.where(approved: false)
+    else
+      @users = User.all
+    end
+    # @users = User.all
+    # authorize @users
   end
 
   def show
@@ -18,6 +23,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     authorize @user
+
     if @user.update_attributes(secure_params)
       redirect_to users_path, :notice => "User updated."
     else
@@ -39,7 +45,7 @@ class UsersController < ApplicationController
   private
 
   def secure_params
-    params.require(:user).permit(:role)
+    params.require(:user).permit(:role, :approved)
   end
 
 end

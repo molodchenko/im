@@ -2,12 +2,22 @@
 <%= form_for(user) do |f| %>
 
 <div class="container">
-
   <div class="row">
     <div class="span2"><%= link_to user.email, user %></div>
+    <!-- <div class="span2"><%= link_to "Edit", edit_user_path(user) %></div> -->
     <div class="span3"><%= f.select(:role, User.roles.keys.map {|role| [role,role]}) %></div>
-    <div class="span2"><%= f.submit 'Change Role', :class => 'btn btn-primary'  %></div>
-    <div class="span2"> <%= link_to("Delete user", user_path(user), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-danger') unless user == current_user %></div>
+    <% if user.approved? %>
+      <div class="span2">"User approved"</div>
+    <% else %>
+      <div class="span2">
+        <%= f.label :approved, text: "Skill" do %>
+          <%= f.check_box :approved, {}, true, false %>
+          Need approve
+        <% end %>
+      </div>
+    <% end %>  
+    <div class="span2"><%= f.submit 'Submit', :class => 'btn btn-primary'  %></div>
+    <div class="span2"><%= link_to("Delete user", user_path(user), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => 'btn btn-danger') unless user == current_user %></div>
 
   </div>
 
